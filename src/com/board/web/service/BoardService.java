@@ -7,12 +7,13 @@ import com.board.web.domain.ArticleBean;
 
 public interface BoardService {
 	public void insertArticle(ArticleBean article);
-	public int countArticles() throws Exception;
+	public int insertMaxSeq();
+	public int countArticles();
 	public int searchCount(Map<String, Object>map);
 	public ArticleBean selectArticle(ArticleBean article);
 	public List<ArticleBean> list(Map<String, Object>map);
 	public List<ArticleBean> searchByName(Map<String, Object>map);
 	public List<ArticleBean> searchByTitle(Map<String, Object>map);
 	public void updateArticle(ArticleBean article);
-	public ArticleBean deleteArticle(ArticleBean article);
+	public void deleteArticle(ArticleBean article);
 }

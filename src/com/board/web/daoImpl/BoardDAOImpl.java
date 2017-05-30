@@ -3,7 +3,11 @@ package com.board.web.daoImpl;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.Format;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,64 +34,220 @@ public class BoardDAOImpl implements BoardDAO{
 	
 	@Override
 	public void insertArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
+		
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="INSERT INTO Board(writer, title, content,regidate) VALUES"+
+						"('"+article.getWriter()+"','"+article.getTitle()+"',"
+								+ "'"+article.getContent()+"','"+article.getRegiDate()+"')";
+			stmt.executeUpdate(sql);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		
 	}
 
 	@Override
-	public int countArticles() throws Exception {
-			Class.forName(DRIVER);
-			Connection connection = DriverManager.getConnection(URL,USER,PW);
-			Statement stmt = connection.createStatement();
-			String sql="SELECT COUNT(*) AS COUNT FROM Board";
-			ResultSet rs=stmt.executeQuery(sql);
-			int count=0;
-			if(rs.next()){
-				count=Integer.parseInt(rs.getString("count"));
+	public int countArticles() {
+		int count=0;
+			try {
+				Class.forName(DRIVER);
+				Connection connection = DriverManager.getConnection(URL,USER,PW);
+				Statement stmt = connection.createStatement();
+				String sql="SELECT COUNT(*) AS COUNT FROM Board";
+				ResultSet rs=stmt.executeQuery(sql);
+				
+				if(rs.next()){
+					count=Integer.parseInt(rs.getString("count"));
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
 		return count;
 	}
 
 	@Override
 	public int searchCount(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return 0;
+		int count=0;
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql = "SELECT COUNT(*) AS selectCount FROM Board WHERE "+map.get("selectVal")+"='"+map.get("search")+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next()){
+				count=rs.getInt("selectCount");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return count;
 	}
 
 	@Override
 	public ArticleBean selectArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql = "SELECT * FROM Board WHERE seq_no ='"+article.getSeqNo()+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next()){
+				article = new ArticleBean();
+				article.setSeqNo(rs.getString("seq_no"));
+				article.setWriter(rs.getString("writer"));
+				article.setTitle(rs.getString("title"));
+				article.setContent(rs.getString("content"));
+				article.setRegiDate(rs.getString("regidate"));
+				article.setHitCount(rs.getString("hit_count"));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return article;
 	}
 
 	@Override
 	public List<ArticleBean> list(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ArticleBean> list = new ArrayList<>();
+		ArticleBean article =null;
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="SELECT * FROM Board ORDER BY seq_no DESC";
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				article = new ArticleBean();
+				article.setSeqNo(rs.getString("seq_no"));
+				article.setWriter(rs.getString("writer"));
+				article.setTitle(rs.getString("title"));
+				article.setContent(rs.getString("content"));
+				article.setRegiDate(rs.getString("regidate"));
+				article.setHitCount(rs.getString("hit_count"));
+				list.add(article);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		ArticleBean article =null;
+		List<ArticleBean> list = new ArrayList<>();
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="SELECT * FROM Board WHERE writer='"+map.get("search")+"'";
+			System.out.println("검색 쿼리문 : " + sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				article = new ArticleBean();
+				article.setSeqNo(rs.getString("seq_no"));
+				article.setWriter(rs.getString("writer"));
+				article.setTitle(rs.getString("title"));
+				article.setContent(rs.getString("content"));
+				article.setRegiDate(rs.getString("regidate"));
+				article.setHitCount(rs.getString("hit_count"));
+				list.add(article);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
 	public List<ArticleBean> searchByTitle(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		ArticleBean article =null;
+		List<ArticleBean> list = new ArrayList<>();
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql = "SELECT * FROM Board WHERE title='"+map.get("search")+"'";
+			System.out.println("제목으로 검색 쿼리문 : " + sql);
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				article = new ArticleBean();
+				article.setSeqNo(rs.getString("seq_no"));
+				article.setWriter(rs.getString("writer"));
+				article.setTitle(rs.getString("title"));
+				article.setContent(rs.getString("content"));
+				article.setRegiDate(rs.getString("regidate"));
+				article.setHitCount(rs.getString("hit_count"));
+				list.add(article);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
 	public void updateArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="UPDATE Board SET title='"+article.getTitle()+"', content='"+article.getContent()+
+					"' WHERE seq_no="+article.getSeqNo()+"";
+			System.out.println("업데이트 sql문 : " + sql);
+			stmt.executeUpdate(sql);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
-	public ArticleBean deleteArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteArticle(ArticleBean article) {
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="DELETE FROM Board WHERE seq_no='"+article.getSeqNo()+"'";
+			System.out.println("삭제 sql문 : " + sql);
+			stmt.executeUpdate(sql);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public int insertMaxSeq() {
+		int count=0;
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql = "SELECT MAX(seq_no) AS max FROM Board"; 
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.next()){
+				count = Integer.parseInt(rs.getString("max"));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return count;
 	}
 
 }

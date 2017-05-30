@@ -1,5 +1,6 @@
 package com.board.web.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,56 +23,62 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public void insertArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
-		
+		dao.insertArticle(article);
 	}
 
 	@Override
-	public int countArticles() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public int countArticles(){
+		int count=0;
+		try {
+			count=dao.countArticles();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	@Override
 	public int searchCount(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return 0;
+		return dao.searchCount(map);
 	}
 
 	@Override
 	public ArticleBean selectArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.selectArticle(article);
 	}
 
 	@Override
 	public List<ArticleBean> list(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		List<ArticleBean> list = new ArrayList<>();
+		list = dao.list(map);
+		return list;
 	}
 
 	@Override
 	public List<ArticleBean> searchByName(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		return 	dao.searchByName(map);
 	}
 
 	@Override
 	public List<ArticleBean> searchByTitle(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.searchByTitle(map);
 	}
 
 	@Override
 	public void updateArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
+		dao.updateArticle(article);
 		
 	}
 
 	@Override
-	public ArticleBean deleteArticle(ArticleBean article) {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteArticle(ArticleBean article) {
+		dao.deleteArticle(article);
+	}
+
+	@Override
+	public int insertMaxSeq() {
+		return dao.insertMaxSeq();
 	}
 
 }

@@ -4,12 +4,22 @@ CREATE TABLE Board(
 	content varchar(500) not null,
 	writer varchar(50) not null,
 	regidate varchar(11) not null,
-	hit_hit_count integer default 0 null,
+	hit_count integer default 0 null,
 	file_name varchar(100) null
 )
+SELECT MAX(seq_no) AS max FROM Board;
 
+SELECT * FROM Board;
 
-SELECT* FROM Board;
+UPDATE Board SET title='aaa', content='ffff' WHERE seq_no=100;
+
+DELETE FROM Board WHERE title = '';
+
+DELETE FROM Board WHERE seq_no = 100;
+
+SELECT * FROM Board WHERE writer='홍길동';
+
+SELECT * FROM Board WHERE title='노우'
 
 INSERT INTO Board(title,content,writer,regidate) VALUES('인생','살 무엇을 얼마나','정만호','2017-05-11');
 INSERT INTO Board(title,content,writer,regidate) VALUES('봄바람','뼈 쓸쓸한 인생에 곧 있다','홍길동','2017-05-10');

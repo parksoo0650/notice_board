@@ -8,17 +8,20 @@
 <div class="container-fluid" style="width:80%">
 <jsp:include page="navbar.jsp"/>
 <h1>ARTICLE UPDATE</h1>
-		<input type="text" name="writer" style="margin-top:20px"  class="form-control" placeholder="작성자 이름" />
-		<input type="text" name="title" style="margin-top:20px" class="form-control"  placeholder="제목" /><br />
+<form action="${context}/board.do">
+		<input type="hidden" name="max" value="${max}"/>
+		<input type="text" name="writer" style="margin-top:20px"  class="form-control" placeholder="작성자 이름" value="${writer}"/>
+		<input type="text" name="title" style="margin-top:20px" class="form-control"  placeholder="제목" value="${title}"/><br />
 	    <div class="row">
 		    <div style="width:97%; margin:10px auto" >
-	      		<textarea class="form-control" rows="20" id="comment"></textarea>
+	      		<textarea class="form-control" rows="20" name="comment">${comment}</textarea>
 		    </div>
 	    </div>
 	   
-	<a href="${context}/board.do?action=move&pageName=detail"><input type="submit" class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="CANCEL"/></a>
-	<a href="${context}/board.do?action=list"><input type="submit" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/></a>
+	<input type="submit" class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="CANCEL"/>
+	<input type="submit" class="btn btn-primary" style="float:right;width:100px;margin-right:10px" value="SUBMIT"/>
+	<input type="hidden" name="action" value="update" />
+</form>
 </div>
-
 </body>
 </html>

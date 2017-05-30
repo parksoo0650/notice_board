@@ -66,5 +66,9 @@ public class ArticleBean {
 	public void setEndRow(String endRow) {
 		EndRow = endRow;
 	}
-	
+ @Override
+ 	public String toString() {
+ 		return "ArticleBean [seqNo=" + seqNo + ", title=" + title + ", content=" + content + ", writer=" + writer
+				+ ", regiDate=" + regiDate + ", hitCount=" + hitCount +"]";
+ 	}	
 }

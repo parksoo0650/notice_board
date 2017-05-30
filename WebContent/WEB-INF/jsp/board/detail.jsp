@@ -8,16 +8,17 @@
 <div class="container-fluid" style="width:80%">
 <jsp:include page="navbar.jsp"/>
 <h1>ARTICLE DETAIL</h1>
-		<input type="text" name="writer" style="margin-top:20px"  class="form-control" placeholder="작성자 이름" />
-		<input type="text" name="title" style="margin-top:20px" class="form-control"  placeholder="제목" /><br />
+		<input type="hidden" name="max" value="${seqNo}"/>
+		<input type="text" name="writer" style="margin-top:20px"  class="form-control" placeholder="작성자 이름" value="${writer}"/>
+		<input type="text" name="title" style="margin-top:20px" class="form-control"  placeholder="제목"  value="${title}"/><br />
 	    <div class="row">
 		    <div style="width:97%; margin:10px auto" >
-	      		<textarea class="form-control" rows="20" id="comment"></textarea>
+	      		<textarea class="form-control" rows="20" name="comment">${content}</textarea>
 		    </div>
 	    </div>
-	<a href="${context}/board.do?action=delete"><input type="submit" class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="DELETE"/></a>
-	<a href="${context}/board.do?action=upload"><input type="submit" class="btn btn-warning" style="float:right;width:100px;margin-right:10px" value="UPLOAD"/></a>
-	<a href="${context}/board.do?action=update"><input type="submit" class="btn btn-success" style="float:right;width:100px;margin-right:10px" value="UPDATE"/></a>
+	<a href="${context}/board.do?action=delete&max=${seqNo}&writer=${writer}&title=${title}&comment=${content}"><input type="submit" name="action"  class="btn btn-danger" style="float:right;width:100px;margin-right:10px" value="DELETE"/>DELETE</a>
+	<a href="${context}/board.do?action=move"><input type="submit" class="btn btn-warning" style="float:right;width:100px;margin-right:10px" value="UPLOAD"/>UPLOAD</a>
+	<a href="${context}/board.do?action=move&pageName=update&writer=${writer}&title=${title}&comment=${content}"><input type="submit" class="btn btn-success" style="float:right;width:100px;margin-right:10px" value="UPDATE"/>UPDATE</a>
 </div>
 </body>
 </html>
