@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -15,10 +17,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 
 import com.board.web.domain.ArticleBean;
 import com.board.web.service.BoardService;
+import com.board.web.service.PaginationService;
 import com.board.web.serviceImpl.BoardServiceImpl;
+import com.board.web.serviceImpl.PaginationServiceImpl;
 
 @WebServlet("/board.do")
 public class BoardController extends HttpServlet{
@@ -31,13 +37,19 @@ public class BoardController extends HttpServlet{
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		BoardService service = BoardServiceImpl.getInstance();
+		PaginationService pService = new PaginationServiceImpl();
+		HttpSession session = request.getSession();
 		String path = request.getServletPath(),
 				directory=path.substring(0,path.indexOf(".")),
 				action=request.getParameter("action"),
 				pageName=request.getParameter("pageName"),
+				pageNumber=request.getParameter("no"),
 				maxSeq="";
-		int count=0;
+				int count=0;
+				pageNumber=(pageNumber==null)?"1":pageNumber;
 				System.out.println("서블릿 경로 : " + path);
+		String[] params=new String[7];
+		int[] rowValues=new int[7];
 		Map<String, Object> map = null;
 		List<ArticleBean> list = null;
 		ArticleBean article = null;
@@ -59,12 +71,33 @@ public class BoardController extends HttpServlet{
 			System.out.println("action=list 접근");
 			list = new ArrayList<>();
 			map = new HashMap<>();
+			params[0]=pageNumber;
+			params[1]=String.valueOf(service.countArticles());
+			params[2]="5";
+			params[3]="5";
+			rowValues=pService.calculateRows(params);
+			map.put("startRow", rowValues[0]);
+			map.put("endRow", rowValues[1]);
 			count=service.countArticles();
 			list = service.list(map);
 			System.out.println("리스트의 수 : " + count);
 			System.out.println("가져온 리스트 : " + list);
+			request.setAttribute("pagePerOneblock", params[3]);
+			request.setAttribute("rowsPerOnePage", params[2]);
+			request.setAttribute("theNumberOfRows", params[1]);
+			request.setAttribute("theNumberOfPages", rowValues[6]);
+			request.setAttribute("pageNumber", params[0]);
+			request.setAttribute("startPage", rowValues[2]);
+			request.setAttribute("endPage", rowValues[3]);
+			request.setAttribute("startRow", rowValues[0]);
+			request.setAttribute("endRow", rowValues[1]);
+			request.setAttribute("prevBlock", rowValues[4]);
+			request.setAttribute("nextBlock", rowValues[5]);
 			request.setAttribute("count", count);
 			request.setAttribute("list", list);
+			request.setAttribute("action", "list");
+			System.out.println("시작 로우 : " + map.get("startRow"));
+			System.out.println("엔드 로우 : " + map.get("endRow"));
 			request.getRequestDispatcher("/WEB-INF/jsp/board/main.jsp").forward(request, response);
 			return;
 		case "write":
@@ -144,6 +177,13 @@ public class BoardController extends HttpServlet{
 		case "search":
 			String selectVal=request.getParameter("selectVal");
 			String search=request.getParameter("msg");
+			if(selectVal != null){
+				session.setAttribute("selectVal", selectVal);
+				session.setAttribute("search", search);
+			}else{
+				selectVal=(String) session.getAttribute("selectVal");
+				search=(String) session.getAttribute("search");
+			}
 			System.out.println("넘어온 값 : " + selectVal + ", " + search);
 			map = new HashMap<>();
 			list = new ArrayList<>();
@@ -151,17 +191,53 @@ public class BoardController extends HttpServlet{
 			if(selectVal.equals("writer")){
 				map.put("selectVal", selectVal);
 				map.put("search", search);
+				params[0]=pageNumber;
+				params[1]=String.valueOf(service.searchCount(map));
+				params[2]="5";
+				params[3]="5";
+				rowValues=pService.calculateRows(params);
+				map.put("startRow", rowValues[0]);
+				map.put("endRow", rowValues[1]);
 				list=service.searchByName(map);
-				count=service.searchCount(map);
+				request.setAttribute("pagePerOneblock", params[3]);
+				request.setAttribute("rowsPerOnePage", params[2]);
+				request.setAttribute("theNumberOfRows", params[1]);
+				request.setAttribute("theNumberOfPages", rowValues[6]);
+				request.setAttribute("pageNumber", params[0]);
+				request.setAttribute("startPage", rowValues[2]);
+				request.setAttribute("endPage", rowValues[3]);
+				request.setAttribute("startRow", rowValues[0]);
+				request.setAttribute("endRow", rowValues[1]);
+				request.setAttribute("prevBlock", rowValues[4]);
+				request.setAttribute("nextBlock", rowValues[5]);
 				request.setAttribute("list", list);
 				request.setAttribute("count", count);
+				request.setAttribute("action", "search");
 			}else{
 				map.put("selectVal", selectVal);
 				map.put("search", search);
+				params[0]=pageNumber;
+				params[1]=String.valueOf(service.searchCount(map));
+				params[2]="5";
+				params[3]="5";
+				rowValues=pService.calculateRows(params);
+				map.put("startRow", rowValues[0]);
+				map.put("endRow", rowValues[1]);
 				list = service.searchByTitle(map);
-				count=service.searchCount(map);
 				request.setAttribute("list", list);
 				request.setAttribute("count", count);
+				request.setAttribute("pagePerOneblock", params[3]);
+				request.setAttribute("rowsPerOnePage", params[2]);
+				request.setAttribute("theNumberOfRows", params[1]);
+				request.setAttribute("theNumberOfPages", rowValues[6]);
+				request.setAttribute("pageNumber", params[0]);
+				request.setAttribute("startPage", rowValues[2]);
+				request.setAttribute("endPage", rowValues[3]);
+				request.setAttribute("startRow", rowValues[0]);
+				request.setAttribute("endRow", rowValues[1]);
+				request.setAttribute("prevBlock", rowValues[4]);
+				request.setAttribute("nextBlock", rowValues[5]);
+				request.setAttribute("action","search");
 			}
 			request.getRequestDispatcher("/WEB-INF/jsp/board/main.jsp").forward(request, response);
 			break;

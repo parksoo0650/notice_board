@@ -21,6 +21,12 @@ SELECT * FROM Board WHERE writer='홍길동';
 
 SELECT * FROM Board WHERE title='노우'
 
+SELECT * FROM Board WHERE title='컴백'
+
+SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.*
+FROM ( SELECT * FROM Board) 
+A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN 1 AND 10;
+
 INSERT INTO Board(title,content,writer,regidate) VALUES('인생','살 무엇을 얼마나','정만호','2017-05-11');
 INSERT INTO Board(title,content,writer,regidate) VALUES('봄바람','뼈 쓸쓸한 인생에 곧 있다','홍길동','2017-05-10');
 INSERT INTO Board(title,content,writer,regidate) VALUES('무의미한','그들의 역사를 없는 낙원을 이 있으랴?','함채현','2017-05-05');

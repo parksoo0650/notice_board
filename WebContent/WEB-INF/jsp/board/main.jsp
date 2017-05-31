@@ -21,7 +21,7 @@
 		</div>
 	</form>
 		<div style="margin:20px 0" >
-			<span> 총게시글수 ${count}</span>
+			<span> 총게시글수 ${theNumberOfRows}</span>
 			<a href="${context}/board.do?action=move&pageName=write">
 			<button class="btn btn-danger" style="float:right;width:100px">글쓰기</button>
 			</a>
@@ -50,17 +50,28 @@
 	</table>
 	<nav style="width:30%;margin:0 auto">
 		<ul class="pagination">
+		<c:if test="${requestScope.prevBlock gt 0}">
 		<li>
-			<a href="${context}/board.do?action=list&pageName=main&pageNumber=${requestScope.prevBlock}">◀PREV</a>
+			<a href="${context}/board.do?action=${requestScope.action}&no=${requestScope.prevBlock}">◀PREV</a>
 		</li>
+		</c:if>
+		<c:forEach varStatus="i" begin="${requestScope.startPage}" end="${requestScope.endPage}" step="1">
 			<li>
-					<a href="#"><font style="color:red">1</font></a>
-					<a href="${context}/board.do?action=list&pageName=main&pageNumber=1">2 3 4 5</a>
+			<c:choose>
+			<c:when test="${i.index eq pageNumber}">
+					<a href="#"><font style="color:red">${i.index}</font></a>
+				</c:when>
+			<c:otherwise>
+					<a href="${context}/board.do?action=${requestScope.action}&no=${i.index}">${i.index}</a>
+			</c:otherwise>
+			</c:choose>
 			</li>
+			</c:forEach>
+		<c:if test="${nextBlock le theNumberOfPages}">
 		<li>
-			<a href="${context}/board.do?action=list&pageName=main&pageNumber=5">NEXT▶</a>
+			<a href="${context}/board.do?action=${requestScope.action}&no=${requestScope.nextBlock}">NEXT▶</a>
 		</li>
-
+		</c:if>
 		</ul>
 	</nav> 
 </div>

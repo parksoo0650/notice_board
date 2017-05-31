@@ -123,7 +123,12 @@ public class BoardDAOImpl implements BoardDAO{
 			Class.forName(DRIVER);
 			Connection connection = DriverManager.getConnection(URL,USER,PW);
 			Statement stmt = connection.createStatement();
-			String sql="SELECT * FROM Board ORDER BY seq_no DESC";
+			String s = String.valueOf(map.get("startRow"));
+			String e = String.valueOf(map.get("endRow"));
+			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
+					+ "FROM ( SELECT * FROM Board) "
+					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
+			System.out.println("페이지 네이션 쿼리 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next()){
 				article = new ArticleBean();
@@ -150,7 +155,11 @@ public class BoardDAOImpl implements BoardDAO{
 			Class.forName(DRIVER);
 			Connection connection = DriverManager.getConnection(URL,USER,PW);
 			Statement stmt = connection.createStatement();
-			String sql="SELECT * FROM Board WHERE writer='"+map.get("search")+"'";
+			String s = String.valueOf(map.get("startRow"));
+			String e = String.valueOf(map.get("endRow"));
+			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
+					+ "FROM ( SELECT * FROM Board WHERE writer='"+map.get("search")+"') "
+					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
 			System.out.println("검색 쿼리문 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next()){
@@ -178,7 +187,11 @@ public class BoardDAOImpl implements BoardDAO{
 			Class.forName(DRIVER);
 			Connection connection = DriverManager.getConnection(URL,USER,PW);
 			Statement stmt = connection.createStatement();
-			String sql = "SELECT * FROM Board WHERE title='"+map.get("search")+"'";
+			String s = String.valueOf(map.get("startRow"));
+			String e = String.valueOf(map.get("endRow"));
+			String sql = "SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
+					+ "FROM ( SELECT * FROM Board WHERE title='"+map.get("search")+"') "
+					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
 			System.out.println("제목으로 검색 쿼리문 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next()){
