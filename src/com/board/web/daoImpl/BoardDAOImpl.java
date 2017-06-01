@@ -126,7 +126,7 @@ public class BoardDAOImpl implements BoardDAO{
 			String s = String.valueOf(map.get("startRow"));
 			String e = String.valueOf(map.get("endRow"));
 			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
-					+ "FROM ( SELECT * FROM Board) "
+					+ "FROM ( SELECT * FROM Board ORDER BY seq_no DESC) "
 					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
 			System.out.println("페이지 네이션 쿼리 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -158,7 +158,7 @@ public class BoardDAOImpl implements BoardDAO{
 			String s = String.valueOf(map.get("startRow"));
 			String e = String.valueOf(map.get("endRow"));
 			String sql="SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
-					+ "FROM ( SELECT * FROM Board WHERE writer='"+map.get("search")+"') "
+					+ "FROM ( SELECT * FROM Board WHERE writer LIKE '%"+map.get("search")+"%' ORDER BY seq_no DESC) "
 					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
 			System.out.println("검색 쿼리문 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
@@ -190,7 +190,7 @@ public class BoardDAOImpl implements BoardDAO{
 			String s = String.valueOf(map.get("startRow"));
 			String e = String.valueOf(map.get("endRow"));
 			String sql = "SELECT * FROM (SELECT @NO := @NO + 1 AS ROWNUM, A.* "
-					+ "FROM ( SELECT * FROM Board WHERE title='"+map.get("search")+"') "
+					+ "FROM ( SELECT * FROM Board WHERE title LIKE '%"+map.get("search")+"%' ORDER BY seq_no DESC)"
 					+ "A,( SELECT @NO := 0 ) B ) C WHERE C.ROWNUM BETWEEN "+s+" AND "+e+"";
 			System.out.println("제목으로 검색 쿼리문 : " + sql);
 			ResultSet rs = stmt.executeQuery(sql);
