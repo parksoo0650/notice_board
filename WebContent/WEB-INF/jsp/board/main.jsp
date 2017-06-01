@@ -9,6 +9,7 @@
 <form action="${context}/board.do">
 	<div style="width:90%;margin:20px auto;">
 		<select name="selectVal" class="form-control"  style="width:20%;float:left;margin-right:36px">
+			<option value="all">전체</option>
 			<option value="writer">작성자</option>
 			<option value="title">제목</option>
 		</select>
@@ -21,7 +22,7 @@
 		</div>
 	</form>
 		<div style="margin:20px 0" >
-			<span> 총게시글수 ${theNumberOfRows}</span>
+			<span> 총게시글수 ${requestScope.theNumberOfRows}</span>
 			<a href="${context}/board.do?action=move&pageName=write">
 			<button class="btn btn-danger" style="float:right;width:100px">글쓰기</button>
 			</a>

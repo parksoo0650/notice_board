@@ -263,4 +263,18 @@ public class BoardDAOImpl implements BoardDAO{
 		return count;
 	}
 
+	@Override
+	public void updateHitCount(ArticleBean article) {
+		try {
+			Class.forName(DRIVER);
+			Connection connection = DriverManager.getConnection(URL,USER,PW);
+			Statement stmt = connection.createStatement();
+			String sql="UPDATE Board SET hit_count=hit_count+1 WHERE seq_no='"+article.getSeqNo()+"'";
+			stmt.executeUpdate(sql);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

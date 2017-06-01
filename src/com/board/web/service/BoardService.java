@@ -16,4 +16,5 @@ public interface BoardService {
 	public List<ArticleBean> searchByTitle(Map<String, Object>map);
 	public void updateArticle(ArticleBean article);
 	public void deleteArticle(ArticleBean article);
+	public void updateHitCount(ArticleBean article);
 }

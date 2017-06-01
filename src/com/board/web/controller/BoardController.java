@@ -126,6 +126,8 @@ public class BoardController extends HttpServlet{
 			String no = request.getParameter("no");
 			article.setSeqNo(no);
 			article=service.selectArticle(article);
+			service.updateHitCount(article);
+			System.out.println("조회수 증가");
 			request.setAttribute("writer", article.getWriter());
 			request.setAttribute("title", article.getTitle());
 			request.setAttribute("content", article.getContent());
@@ -144,11 +146,28 @@ public class BoardController extends HttpServlet{
 			article.setContent(comment);
 			service.updateArticle(article);
 			System.out.println("수정 되었습니다.");
-			
 			list = new ArrayList<>();
 			map = new HashMap<>();
 			count=service.countArticles();
+			params[0]=pageNumber;
+			params[1]=String.valueOf(service.countArticles());
+			params[2]="5";
+			params[3]="5";
+			rowValues=pService.calculateRows(params);
+			map.put("startRow", rowValues[0]);
+			map.put("endRow", rowValues[1]);
 			list = service.list(map);
+			request.setAttribute("pagePerOneblock", params[3]);
+			request.setAttribute("rowsPerOnePage", params[2]);
+			request.setAttribute("theNumberOfRows", params[1]);
+			request.setAttribute("theNumberOfPages", rowValues[6]);
+			request.setAttribute("pageNumber", params[0]);
+			request.setAttribute("startPage", rowValues[2]);
+			request.setAttribute("endPage", rowValues[3]);
+			request.setAttribute("startRow", rowValues[0]);
+			request.setAttribute("endRow", rowValues[1]);
+			request.setAttribute("prevBlock", rowValues[4]);
+			request.setAttribute("nextBlock", rowValues[5]);
 			System.out.println("리스트의 수 : " + count);
 			System.out.println("가져온 리스트 : " + list);
 			request.setAttribute("count", count);
@@ -188,7 +207,32 @@ public class BoardController extends HttpServlet{
 			map = new HashMap<>();
 			list = new ArrayList<>();
 			count=0;
-			if(selectVal.equals("writer")){
+			if(selectVal.equals("all")){
+				map.put("selectVal", selectVal);
+				map.put("search", search);
+				params[0]=pageNumber;
+				params[1]=String.valueOf(service.countArticles());
+				params[2]="5";
+				params[3]="5";
+				rowValues=pService.calculateRows(params);
+				map.put("startRow", rowValues[0]);
+				map.put("endRow", rowValues[1]);
+				list=service.searchByName(map);
+				request.setAttribute("pagePerOneblock", params[3]);
+				request.setAttribute("rowsPerOnePage", params[2]);
+				request.setAttribute("theNumberOfRows", params[1]);
+				request.setAttribute("theNumberOfPages", rowValues[6]);
+				request.setAttribute("pageNumber", params[0]);
+				request.setAttribute("startPage", rowValues[2]);
+				request.setAttribute("endPage", rowValues[3]);
+				request.setAttribute("startRow", rowValues[0]);
+				request.setAttribute("endRow", rowValues[1]);
+				request.setAttribute("prevBlock", rowValues[4]);
+				request.setAttribute("nextBlock", rowValues[5]);
+				request.setAttribute("list", list);
+				request.setAttribute("count", count);
+				request.setAttribute("action", "search");
+			}else if(selectVal.equals("writer")){
 				map.put("selectVal", selectVal);
 				map.put("search", search);
 				params[0]=pageNumber;

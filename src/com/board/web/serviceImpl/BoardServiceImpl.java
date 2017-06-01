@@ -81,4 +81,9 @@ public class BoardServiceImpl implements BoardService{
 		return dao.insertMaxSeq();
 	}
 
+	@Override
+	public void updateHitCount(ArticleBean article) {
+		dao.updateHitCount(article);
+	}
+
 }
